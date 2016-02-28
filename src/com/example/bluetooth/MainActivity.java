@@ -1,150 +1,224 @@
 package com.example.bluetooth;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Random;
 import java.util.Set;
-
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Image;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
-
-	Button b;
-	Button b2;
-	Button b3;
-	Button b4;
-	Button b5;
-	TextView t1;
-	TextView t2;
-	EditText et1;
-	BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();		
-	BluetoothDevice serwer = ba.getRemoteDevice("30:14:12:08:08:17");
+	Handler hand ;	
+	ImageButton gora;
+	ImageButton dol;
+	public static boolean nacisnieto1=false;
+	public static boolean Error=false;
+	TextView t1 ;
+	public static int zmienna;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		b=(Button) findViewById(R.id.button1);
-		b2=(Button) findViewById(R.id.button2);
-		b3=(Button) findViewById(R.id.button3);
-		b4=(Button) findViewById(R.id.button4);
-		b5=(Button) findViewById(R.id.button5);
-		t1=(TextView) findViewById(R.id.textView1);
-		t2=(TextView) findViewById(R.id.textView2);
-		et1=(EditText) findViewById(R.id.editText1);
+		t1= (TextView) findViewById(R.id.textView);
+		gora=(ImageButton) findViewById(R.id.gora);
+		dol=(ImageButton) findViewById(R.id.dol);
+		wyswietl("Windziocha :D");
 		
-		Log.d("INFO","Uruchomiono program");
+		new Thread(new Watek_dzialania()).start(); // rozpoczyna watek dzialania
 		
-		b.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				try {
-					dajSieWykryc();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}				
-			}
-		});
-		b2.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				wykryjInne();				
-			}
-		});
-		
-		b3.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				pokazSparowane();				
-			}
-		});
-		b4.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View v) {		
-				t2.setText("Jo sem serwer!");
-				new SerwerBluetooth().start();
-			}
-		});
-		b5.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				t2.setText("tworze clienta!");
-				BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();		
-				BluetoothDevice serwer = ba.getRemoteDevice("30:14:12:08:08:17");      
-				ClientBluetooth m=new ClientBluetooth(serwer,4);
-				m.start();
-				
-				t2.setText("utworzony!");
-				m=null;
-			}
-		});
-		
-		
-		
-		BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
-		t1.setText("Twój mac: "+ba.getAddress());
-		Log.d("INFO","Twój adres urządzenia: "+ba.getAddress());
-		if(!ba.isEnabled()){
-			Intent i=new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivityForResult(i, 1);
+
+		gora.setOnTouchListener(new OnTouchListener () {
+			public boolean onTouch(View view, MotionEvent event) {
+			if(Error)
+				 {
+			Toast.makeText(MainActivity.this, "Pr�buje wznowic polczenie",
+							   Toast.LENGTH_SHORT).show(); 
+			nacisnieto1=false;
+			wyswietl("Brak polaczenia");
+			return false;
+			
 		}
-	}
-	
-	@Override
-	protected void onActivityResult(int requestCode,int resultCode,Intent i){
-		if(resultCode==Activity.RESULT_OK){
-			Log.d("INFO","Mamy zgodę!");
-			BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();					
-		}
-	}
-	
-	
-	private final BroadcastReceiver odbiorca= new BroadcastReceiver() {		
-		@Override
-		public void onReceive(Context context, Intent i) {
-			String akcja = 	i.getAction();
-			if(BluetoothDevice.ACTION_FOUND.equals(akcja)){		
-	              BluetoothDevice device = i.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-	              String status="";	              
-	              if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-	            	  status="nie sparowane";
-	              }else{
-	            	  status="sparowane";
-	              }
-	            	  Log.d("INFO","znaleziono urządzenie: "+device.getName()+" - "+device.getAddress()+" - "+status);	         
-	      }			
-		}
-	};
-	
-	public void dajSieWykryc() throws IOException{
-		if(ba.isDiscovering())
+		else 
+		 if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) 
 		{
-			ba.cancelDiscovery();
+			
+		 	nacisnieto1=true;
+		 	setZmienna(1);
+		 	wyswietl("idzie w gore");
+		 	
+		 } 
+		 else if (event.getAction() == android.view.MotionEvent.ACTION_UP) 
+		 {
+			 nacisnieto1=false;
+			 setZmienna(0);
+			 Error=false;
+			 wyswietl("");
+		 }
+		return false;
+			}});
+			
+		dol.setOnTouchListener(new OnTouchListener () {
+			public boolean onTouch(View view, MotionEvent event) {
+			if(Error)
+				 {
+		//Toast.makeText(MainActivity.this, "Pr�buje wznowic polczenie",
+		//					   Toast.LENGTH_SHORT).show(); 
+			nacisnieto1=false;
+			wyswietl("Brak polaczenia");
+			
+			return false;
+			
 		}
-		ba.startDiscovery();
-		Log.d("INFO","Daję się wykryć!");	
-		t2.setText("tworze clienta!");
-//		BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();		
-//		BluetoothDevice serwer = ba.getRemoteDevice("30:14:12:08:08:17");      
-		ClientBluetooth m=new ClientBluetooth(serwer,1);
-		m.start();
+		else 
+		 if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) 
+		{
+			
+		 	nacisnieto1=true;
+		 	setZmienna(3);
+		 	wyswietl("idzie w dol");
+		 	
+		 } 
+		 else if (event.getAction() == android.view.MotionEvent.ACTION_UP) 
+		 {
+			 nacisnieto1=false;
+			 setZmienna(0);
+			 Error=false;
+			 wyswietl("");
+		 }
+		return false;
+	}});	
 		
-		//ba.ACTION_DISCOVERY_FINISHED;
-		ba.cancelDiscovery();
-		t2.setText("utworzony!");
-		m=null;
+		
+		
+	
+		
+		
+	
+	}
+	
+	public void wyswietl(String string) 
+	{
+		t1.setText(string);
+		
+	}
+	
+//	private void inicjalizuj_socket() {
+//		
+//		Future<BluetoothSocket> fut = wateczek.submit(new Watek_polacz());
+//		try {
+//			if(fut.get() != null)
+//			{
+//				socket=fut.get();
+//				Log.d("INFO", "socket nie pusty");
+//			}
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			
+//			//e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//	}
+
+
+//	private void czy_jestem_polaczony() {
+//	
+//		new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				while(true)
+//				{
+//				BluetoothSocket socket1=socket;
+//				if(socket1.isConnected() &&  socket !=null)
+//				{
+//					try {
+//						Thread.sleep(1000);
+//						//inicjalizuj_socket();
+//						//Log.d("INOF", "spie xd");
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						Log.d("INFO", "nie chce spac");
+//					}
+//				}else
+//				{
+//					try {
+//						Log.d("INFO", "probuje wznowic polaczenie ");
+//						inicjalizuj_socket();
+//						socket.connect();
+//						out = new PrintWriter(socket.getOutputStream(),true);
+//						
+//					} catch (IOException e) {
+//						Log.d("INFO", "nie moge nawiazac polaczenia: "+e.getMessage());
+//						
+//						e.printStackTrace();
+//					}
+//					
+//				}
+//				}
+//			}
+//		}).start();
+//		
+//	
+//	}
+
+//	@Override
+//	protected void onActivityResult(int requestCode,int resultCode,Intent i){
+//		if(resultCode==Activity.RESULT_OK){
+//			Log.d("INFO","Mamy zgodę!");
+//			adapter = BluetoothAdapter.getDefaultAdapter();					
+//		}
+//	}
+	
+	
+	
+	
+	public void idz_do_gory() throws IOException{
+//		if(adapter.isDiscovering())
+//		{
+//			adapter.cancelDiscovery();
+//		}
+//		adapter.startDiscovery();
+		Log.d("INFO","Daję się wykryć!");	
+		t1.setText("tworze clienta!");
+ 
+		//ClientBluetooth m=new ClientBluetooth(serwer,1);
+		
+		
+
+	//	adapter.cancelDiscovery();
+		t1.setText("utworzony!");
+		//m=null;
 		
 		
 		
@@ -153,26 +227,21 @@ public class MainActivity extends Activity {
 //		startActivity(pokazSie);
 	}
 	
-	
-	public void wykryjInne(){
-		new ClientBluetooth(serwer , 2).start();
-	
+	public boolean nacisnieto()
+	{
+		return nacisnieto1;
+	}
+
+	public static int getZmienna() {
+		return zmienna;
+	}
+
+	public static void setZmienna(int zmienna) {
+		MainActivity.zmienna = zmienna;
 	}
 	
-	public void pokazSparowane(){
-		/*
-		 * Wyświetlanie listy sparowanych urządzeń, niezależnie od tego czy są 
-		 * właśnie podłączone czy w ogóle włączone.
-		 * */
-		Log.d("INFO","Sparowane dla tego urządzenia");
-		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();		
-		if (pairedDevices.size() > 0) {	
-			for (BluetoothDevice device : pairedDevices) {				
-				Log.d("INFO",device.getName()+" - "+device.getAddress());			
-			}
-		}
-	}
+
+
 	
 	
 	

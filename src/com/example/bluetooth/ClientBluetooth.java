@@ -9,11 +9,11 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
-public class ClientBluetooth extends Thread {
+public class ClientBluetooth implements Runnable {
     public final BluetoothSocket mmSocket;
     private final BluetoothDevice mmDevice;
     private int p;
-    public ClientBluetooth(BluetoothDevice device, int i) {   
+    public ClientBluetooth(BluetoothDevice device, int i)  {   
     	p=i;
         BluetoothSocket tmp = null;
         BluetoothSocket tmp2 = null;
@@ -32,17 +32,18 @@ public class ClientBluetooth extends Thread {
         	Log.d("INFO","Próba połączenia....");
         	
         	mmSocket.connect();
-        	
         	PrintWriter out = new PrintWriter(mmSocket.getOutputStream(),true);
+        	while(mmSocket.isConnected()){
+        	
         	Log.d("INFO","Połączono z serwerem!");
    //         BufferedReader in = new BufferedReader(new InputStreamReader(mmSocket.getInputStream()));
-          
+           
             out.println(p);
-            
+           
             Log.d("INFO","Wys�ano!");
 //            String input = in.readLine();  
 //            Log.d("INFO","Serwer mówi: "+input);
-            
+        	} 
             mmSocket.close();
            
             Log.d("INFO","Połączono zakonczone!");
