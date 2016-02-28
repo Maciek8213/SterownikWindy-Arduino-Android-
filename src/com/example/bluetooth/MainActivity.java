@@ -116,12 +116,6 @@ public class MainActivity extends Activity {
 		return false;
 	}});	
 		
-		
-		
-	
-		
-		
-	
 	}
 	
 	public void wyswietl(String string) 
@@ -129,108 +123,7 @@ public class MainActivity extends Activity {
 		t1.setText(string);
 		
 	}
-	
-//	private void inicjalizuj_socket() {
-//		
-//		Future<BluetoothSocket> fut = wateczek.submit(new Watek_polacz());
-//		try {
-//			if(fut.get() != null)
-//			{
-//				socket=fut.get();
-//				Log.d("INFO", "socket nie pusty");
-//			}
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			
-//			//e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//	}
 
-
-//	private void czy_jestem_polaczony() {
-//	
-//		new Thread(new Runnable() {
-//			
-//			@Override
-//			public void run() {
-//				while(true)
-//				{
-//				BluetoothSocket socket1=socket;
-//				if(socket1.isConnected() &&  socket !=null)
-//				{
-//					try {
-//						Thread.sleep(1000);
-//						//inicjalizuj_socket();
-//						//Log.d("INOF", "spie xd");
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						Log.d("INFO", "nie chce spac");
-//					}
-//				}else
-//				{
-//					try {
-//						Log.d("INFO", "probuje wznowic polaczenie ");
-//						inicjalizuj_socket();
-//						socket.connect();
-//						out = new PrintWriter(socket.getOutputStream(),true);
-//						
-//					} catch (IOException e) {
-//						Log.d("INFO", "nie moge nawiazac polaczenia: "+e.getMessage());
-//						
-//						e.printStackTrace();
-//					}
-//					
-//				}
-//				}
-//			}
-//		}).start();
-//		
-//	
-//	}
-
-//	@Override
-//	protected void onActivityResult(int requestCode,int resultCode,Intent i){
-//		if(resultCode==Activity.RESULT_OK){
-//			Log.d("INFO","Mamy zgodę!");
-//			adapter = BluetoothAdapter.getDefaultAdapter();					
-//		}
-//	}
-	
-	
-	
-	
-	public void idz_do_gory() throws IOException{
-//		if(adapter.isDiscovering())
-//		{
-//			adapter.cancelDiscovery();
-//		}
-//		adapter.startDiscovery();
-		Log.d("INFO","Daję się wykryć!");	
-		t1.setText("tworze clienta!");
- 
-		//ClientBluetooth m=new ClientBluetooth(serwer,1);
-		
-		
-
-	//	adapter.cancelDiscovery();
-		t1.setText("utworzony!");
-		//m=null;
-		
-		
-		
-//		Intent pokazSie = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-//		pokazSie.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-//		startActivity(pokazSie);
-	}
-	
-	public boolean nacisnieto()
-	{
-		return nacisnieto1;
-	}
 
 	public static int getZmienna() {
 		return zmienna;
