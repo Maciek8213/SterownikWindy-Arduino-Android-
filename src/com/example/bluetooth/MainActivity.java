@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
 	public static boolean nacisnieto1=false;
 	public static boolean Error=false;
 	TextView t1 ;
-	public static int zmienna;
+	public static String zmienna;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -59,8 +59,8 @@ public class MainActivity extends Activity {
 			public boolean onTouch(View view, MotionEvent event) {
 			if(Error)
 				 {
-			Toast.makeText(MainActivity.this, "Próbuje wznowic polczenie",
-							   Toast.LENGTH_SHORT).show(); 
+			//Toast.makeText(MainActivity.this, "Próbuje wznowic polczenie",
+			//				   Toast.LENGTH_SHORT).show(); 
 			nacisnieto1=false;
 			wyswietl("Brak polaczenia");
 			return false;
@@ -71,14 +71,14 @@ public class MainActivity extends Activity {
 		{
 			
 		 	nacisnieto1=true;
-		 	setZmienna(1);
+		 	setZmienna("g");
 		 	wyswietl("idzie w gore");
 		 	
 		 } 
 		 else if (event.getAction() == android.view.MotionEvent.ACTION_UP) 
 		 {
 			 nacisnieto1=false;
-			 setZmienna(0);
+			 setZmienna("0");
 			 Error=false;
 			 wyswietl("");
 		 }
@@ -102,14 +102,14 @@ public class MainActivity extends Activity {
 		{
 			
 		 	nacisnieto1=true;
-		 	setZmienna(3);
+		 	setZmienna("1");
 		 	wyswietl("idzie w dol");
 		 	
 		 } 
 		 else if (event.getAction() == android.view.MotionEvent.ACTION_UP) 
 		 {
 			 nacisnieto1=false;
-			 setZmienna(0);
+			 setZmienna("0");
 			 Error=false;
 			 wyswietl("");
 		 }
@@ -125,12 +125,12 @@ public class MainActivity extends Activity {
 	}
 
 
-	public static int getZmienna() {
+	public static String getZmienna() {
 		return zmienna;
 	}
 
-	public static void setZmienna(int zmienna) {
-		MainActivity.zmienna = zmienna;
+	public static void setZmienna(String string) {
+		MainActivity.zmienna = string;
 	}
 	
 

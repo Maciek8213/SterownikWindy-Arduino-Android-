@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 public class Watek_dzialania extends MainActivity implements Runnable{
 	boolean polacz=false;
-	int zmienna=super.getZmienna();
+	String zmienna=super.getZmienna();
 	ClientBluetooth client;
 	BluetoothAdapter adapter= BluetoothAdapter.getDefaultAdapter();		
 	BluetoothDevice serwer = adapter.getRemoteDevice("30:14:12:08:08:17");
@@ -47,6 +47,7 @@ public class Watek_dzialania extends MainActivity implements Runnable{
 		{
 			
 		Log.d("INFO", "wchodze do rozlacz");
+			if(!Error)
 			rozlacz();
 			
 		}
@@ -59,6 +60,7 @@ public class Watek_dzialania extends MainActivity implements Runnable{
 	private void rozlacz() {
 		try {
 			socket.close();
+			out.close();
 		} catch (Exception e) {
 		//	utworz_socket();
 				polacz();
@@ -70,13 +72,18 @@ public class Watek_dzialania extends MainActivity implements Runnable{
 	boolean Error=false;
 	private void wyslij() {
 		try{
-			Log.d("INFO", "wysylam " + String.valueOf(getZmienna()));
+			if(out.checkError() == false)
+			{
+			//Log.d("INFO", "wysylam " + String.valueOf(getZmienna()));
 			out.println(getZmienna());	
-			if(out.checkError() && Error == false)
+			}
+			else if(out.checkError() && Error == false)
 			{
 				Error=true;
 				super.Error = true;
 				socket.close();
+				out.close();
+				polacz= false; // dodana linia do poprawienia chorego gowna
 				polacz();
 				
 			}
@@ -102,13 +109,14 @@ public class Watek_dzialania extends MainActivity implements Runnable{
 					polacz_i_ustaw_przesyl();
 					Log.d("INFO", "Mam socket");
 					polacz=true;
+					super.Error=false;
+					Error=false;
 				}
 				else{
 					Thread.sleep(1);
 					polacz();
 				}
-				super.Error=false;
-				Error=false;
+				
 			} catch (Exception e) {
 				spij(100);
 				polacz();
